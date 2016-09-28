@@ -1,0 +1,14 @@
+﻿<Window x:Class="VideoCaptureGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VideoCaptureGUI"
+        mc:Ignorable="d"
+        Title="Video Capture" Height="350" Width="525">
+    <Grid>
+        <Button x:Name="startRecordButton" Content="开始录制" HorizontalAlignment="Left" Margin="66,53,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="stopRecordButton" Content="停止录制" HorizontalAlignment="Left" Margin="66,86,0,0" VerticalAlignment="Top" Width="75"/>
+
+    </Grid>
+</Window>
