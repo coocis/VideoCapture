@@ -146,6 +146,23 @@ namespace VideoCaptureForUnity
             p.Start();
             p.StandardInput.WriteLine("init");
         }
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="videoCaptureCmdPath">VideoCaptureCmd.exe所在目录,末尾不需要路径分隔符，例如C:\VideoCaputureFolder</param>
+        public VideoCapture(string videoCaptureCmdPath)
+        {
+            _videoCaptureExeFile = videoCaptureCmdPath + @"\VideoCaptureCmd.exe";
+            info.FileName = _videoCaptureExeFile;
+            info.UseShellExecute = false;
+            info.RedirectStandardInput = true;
+            info.RedirectStandardOutput = false;
+            info.CreateNoWindow = true;
+            p.StartInfo = info;
+            p.Start();
+            p.StandardInput.WriteLine("init");
+        }
+
 
         /// <summary>
         /// 初始化
@@ -163,9 +180,36 @@ namespace VideoCaptureForUnity
         /// </summary>
         /// <param name="videoDirectory">视频存放目录，末尾不需要路径分隔符</param>
         /// <param name="videoName">视频名字，末尾不包含视频格式</param>
+        /// <param name="videoCaptureCmdPath">VideoCaptureCmd.exe所在目录,末尾不需要路径分隔符，例如C:\VideoCaputureFolder</param>
+        public VideoCapture(string videoDirectory, string videoName, string videoCaptureCmdPath) : this(videoCaptureCmdPath)
+        {
+            p.StandardInput.WriteLine("setDirectory=" + videoDirectory);
+            p.StandardInput.WriteLine("setName=" + videoName);
+        }
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="videoDirectory">视频存放目录，末尾不需要路径分隔符</param>
+        /// <param name="videoName">视频名字，末尾不包含视频格式</param>
         /// <param name="resolutionWidth">视频分辨率的宽度</param>
         /// <param name="resolutionHeight">视频分辨率的高度></param>
-        public VideoCapture(string videoDirectory, string videoName, int resolutionWidth, int resolutionHeight) : this(videoDirectory, videoName)
+        public VideoCapture(string videoDirectory, string videoName, int resolutionWidth, int resolutionHeight) :
+            this(videoDirectory, videoName)
+        {
+            p.StandardInput.WriteLine("setResolutionWidth=" + resolutionWidth);
+            p.StandardInput.WriteLine("setResolutionHeight=" + resolutionHeight);
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="videoDirectory">视频存放目录，末尾不需要路径分隔符</param>
+        /// <param name="videoName">视频名字，末尾不包含视频格式</param>
+        /// <param name="resolutionWidth">视频分辨率的宽度</param>
+        /// <param name="resolutionHeight">视频分辨率的高度></param>
+        /// <param name="videoCaptureCmdPath">VideoCaptureCmd.exe所在目录,末尾不需要路径分隔符，例如C:\VideoCaputureFolder</param>
+        public VideoCapture(string videoDirectory, string videoName, int resolutionWidth, int resolutionHeight, string videoCaptureCmdPath) :
+            this(videoDirectory, videoName, videoCaptureCmdPath)
         {
             p.StandardInput.WriteLine("setResolutionWidth=" + resolutionWidth);
             p.StandardInput.WriteLine("setResolutionHeight=" + resolutionHeight);
