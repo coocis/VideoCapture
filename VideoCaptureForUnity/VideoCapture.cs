@@ -14,13 +14,13 @@ namespace VideoCaptureForUnity
         {
             get
             {
-                p.StandardInput.WriteLine("getDirectory");
-                return p.StandardOutput.ReadLine().Trim();
+                _process.StandardInput.WriteLine("getDirectory");
+                return _process.StandardOutput.ReadLine().Trim();
             }
 
             set
             {
-                p.StandardInput.WriteLine("setDirectory=" + value);
+                _process.StandardInput.WriteLine("setDirectory=" + value);
             }
         }
         /// <summary>
@@ -31,13 +31,13 @@ namespace VideoCaptureForUnity
         {
             get
             {
-                p.StandardInput.WriteLine("getName");
-                return p.StandardOutput.ReadLine().Trim();
+                _process.StandardInput.WriteLine("getName");
+                return _process.StandardOutput.ReadLine().Trim();
             }
 
             set
             {
-                p.StandardInput.WriteLine("setName=" + value);
+                _process.StandardInput.WriteLine("setName=" + value);
             }
         }
         /// <summary>
@@ -48,13 +48,13 @@ namespace VideoCaptureForUnity
         {
             get
             {
-                p.StandardInput.WriteLine("getResolutionWidth");
-                return Convert.ToInt32(p.StandardOutput.ReadLine().Trim());
+                _process.StandardInput.WriteLine("getResolutionWidth");
+                return Convert.ToInt32(_process.StandardOutput.ReadLine().Trim());
             }
 
             set
             {
-                p.StandardInput.WriteLine("setResolutionWidth=" + value);
+                _process.StandardInput.WriteLine("setResolutionWidth=" + value);
             }
         }
         /// <summary>
@@ -65,13 +65,13 @@ namespace VideoCaptureForUnity
         {
             get
             {
-                p.StandardInput.WriteLine("getResolutionHeight");
-                return Convert.ToInt32(p.StandardOutput.ReadLine().Trim());
+                _process.StandardInput.WriteLine("getResolutionHeight");
+                return Convert.ToInt32(_process.StandardOutput.ReadLine().Trim());
             }
 
             set
             {
-                p.StandardInput.WriteLine("setResolutionHeight=" + value);
+                _process.StandardInput.WriteLine("setResolutionHeight=" + value);
             }
         }
         /// <summary>
@@ -82,8 +82,8 @@ namespace VideoCaptureForUnity
         {
             get
             {
-                p.StandardInput.WriteLine("getFormat");
-                return p.StandardOutput.ReadLine().Trim();
+                _process.StandardInput.WriteLine("getFormat");
+                return _process.StandardOutput.ReadLine().Trim();
             }
 
             private set
@@ -98,13 +98,13 @@ namespace VideoCaptureForUnity
         {
             get
             {
-                p.StandardInput.WriteLine("getFrameRate");
-                return Convert.ToInt32(p.StandardOutput.ReadLine().Trim());
+                _process.StandardInput.WriteLine("getFrameRate");
+                return Convert.ToInt32(_process.StandardOutput.ReadLine().Trim());
             }
 
             set
             {
-                p.StandardInput.WriteLine("setFrameRate=" + value);
+                _process.StandardInput.WriteLine("setFrameRate=" + value);
             }
         }
         /// <summary>
@@ -115,20 +115,20 @@ namespace VideoCaptureForUnity
         {
             get
             {
-                p.StandardInput.WriteLine("getBitRate");
-                return Convert.ToInt32(p.StandardOutput.ReadLine().Trim());
+                _process.StandardInput.WriteLine("getBitRate");
+                return Convert.ToInt32(_process.StandardOutput.ReadLine().Trim());
             }
 
             set
             {
-                p.StandardInput.WriteLine("setBitRate=" + value);
+                _process.StandardInput.WriteLine("setBitRate=" + value);
             }
         }
 
         private string _videoCaptureExeFile = @".\VideoCapture\VideoCaptureCmd.exe";
-        private Process p = new Process();
-        private ProcessStartInfo info = new ProcessStartInfo();
-
+        private Process _process = new Process();
+        private ProcessStartInfo _info = new ProcessStartInfo();
+        private bool _isRecording = false;
 
         /// <summary>
         /// 初始化
@@ -137,14 +137,14 @@ namespace VideoCaptureForUnity
         /// </summary>
         public VideoCapture()
         {
-            info.FileName = _videoCaptureExeFile;
-            info.UseShellExecute = false;
-            info.RedirectStandardInput = true;
-            info.RedirectStandardOutput = false;
-            info.CreateNoWindow = true;
-            p.StartInfo = info;
-            p.Start();
-            p.StandardInput.WriteLine("init");
+            _info.FileName = _videoCaptureExeFile;
+            _info.UseShellExecute = false;
+            _info.RedirectStandardInput = true;
+            _info.RedirectStandardOutput = true;
+            _info.CreateNoWindow = true;
+            _process.StartInfo = _info;
+            _process.Start();
+            _process.StandardInput.WriteLine("init");
         }
         /// <summary>
         /// 初始化
@@ -153,17 +153,15 @@ namespace VideoCaptureForUnity
         public VideoCapture(string videoCaptureCmdPath)
         {
             _videoCaptureExeFile = videoCaptureCmdPath + @"\VideoCaptureCmd.exe";
-            info.FileName = _videoCaptureExeFile;
-            info.UseShellExecute = false;
-            info.RedirectStandardInput = true;
-            info.RedirectStandardOutput = false;
-            info.CreateNoWindow = true;
-            p.StartInfo = info;
-            p.Start();
-            p.StandardInput.WriteLine("init");
+            _info.FileName = _videoCaptureExeFile;
+            _info.UseShellExecute = false;
+            _info.RedirectStandardInput = true;
+            _info.RedirectStandardOutput = false;
+            _info.CreateNoWindow = true;
+            _process.StartInfo = _info;
+            _process.Start();
+            _process.StandardInput.WriteLine("init");
         }
-
-
         /// <summary>
         /// 初始化
         /// </summary>
@@ -171,10 +169,9 @@ namespace VideoCaptureForUnity
         /// <param name="videoName">视频名字，末尾不包含视频格式</param>
         public VideoCapture(string videoDirectory, string videoName) : this()
         {
-            p.StandardInput.WriteLine("setDirectory=" + videoDirectory);
-            p.StandardInput.WriteLine("setName=" + videoName);
+            _process.StandardInput.WriteLine("setDirectory=" + videoDirectory);
+            _process.StandardInput.WriteLine("setName=" + videoName);
         }
-
         /// <summary>
         /// 初始化
         /// </summary>
@@ -183,8 +180,8 @@ namespace VideoCaptureForUnity
         /// <param name="videoCaptureCmdPath">VideoCaptureCmd.exe所在目录,末尾不需要路径分隔符，例如C:\VideoCaputureFolder</param>
         public VideoCapture(string videoDirectory, string videoName, string videoCaptureCmdPath) : this(videoCaptureCmdPath)
         {
-            p.StandardInput.WriteLine("setDirectory=" + videoDirectory);
-            p.StandardInput.WriteLine("setName=" + videoName);
+            _process.StandardInput.WriteLine("setDirectory=" + videoDirectory);
+            _process.StandardInput.WriteLine("setName=" + videoName);
         }
         /// <summary>
         /// 初始化
@@ -196,8 +193,8 @@ namespace VideoCaptureForUnity
         public VideoCapture(string videoDirectory, string videoName, int resolutionWidth, int resolutionHeight) :
             this(videoDirectory, videoName)
         {
-            p.StandardInput.WriteLine("setResolutionWidth=" + resolutionWidth);
-            p.StandardInput.WriteLine("setResolutionHeight=" + resolutionHeight);
+            _process.StandardInput.WriteLine("setResolutionWidth=" + resolutionWidth);
+            _process.StandardInput.WriteLine("setResolutionHeight=" + resolutionHeight);
         }
 
         /// <summary>
@@ -211,56 +208,69 @@ namespace VideoCaptureForUnity
         public VideoCapture(string videoDirectory, string videoName, int resolutionWidth, int resolutionHeight, string videoCaptureCmdPath) :
             this(videoDirectory, videoName, videoCaptureCmdPath)
         {
-            p.StandardInput.WriteLine("setResolutionWidth=" + resolutionWidth);
-            p.StandardInput.WriteLine("setResolutionHeight=" + resolutionHeight);
+            _process.StandardInput.WriteLine("setResolutionWidth=" + resolutionWidth);
+            _process.StandardInput.WriteLine("setResolutionHeight=" + resolutionHeight);
         }
 
         ~VideoCapture()
         {
-            if (p != null)
+            if (_process != null)
             {
-                p.StandardInput.WriteLine("quit");
-                p.Close();
-                p.Dispose();
+                if (_isRecording)
+                {
+                    StopRecord();
+                }
+                _process.Kill();
+                _process.Dispose();
+                _process = null;
             }
         }
-
         /// <summary>
         /// 开始录制
         /// 暂停后再继续用ContinueRecord方法
         /// </summary>
         public void StartRecord()
         {
-            p.StandardInput.WriteLine("start");
+            if (_isRecording)
+            {
+                return;
+            }
+            _process.StandardInput.WriteLine("start");
+            _isRecording = true;
         }
         /// <summary>
         /// 暂停录制
         /// </summary>
         public void PauseRecord()
         {
-            p.StandardInput.WriteLine("pause");
+            if (!_isRecording)
+            {
+                return;
+            }
+            _process.StandardInput.WriteLine("pause");
         }
-
-
         /// <summary>
         /// 继续录制
         /// </summary>
         public void ContinueRecord()
         {
-            p.StandardInput.WriteLine("continue");
+            if (!_isRecording)
+            {
+                return;
+            }
+            _process.StandardInput.WriteLine("continue");
         }
-
         /// <summary>
         /// 结束录制，并且保存视频
         /// </summary>
         public void StopRecord()
         {
-            p.StandardInput.WriteLine("stop");
-            p.StandardInput.WriteLine("quit");
-            p.Close();
-            p.Dispose();
-            p = null;
+            if (!_isRecording)
+            {
+                return;
+            }
+            _process.StandardInput.WriteLine("stop");
+            _isRecording = false;
         }
     }
-
 }

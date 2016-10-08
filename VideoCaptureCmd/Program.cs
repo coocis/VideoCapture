@@ -11,10 +11,10 @@ namespace VideoCaptureCmd
         static void Main(string[] args)
         {
             VideoCapture.VideoCapture vc = new VideoCapture.VideoCapture();
-            string s;
-            while (!(s = Console.ReadLine()).Contains("quit"))
+            string s = "";
+            try
             {
-                try
+                while (!(s = Console.ReadLine()).Contains("quit"))
                 {
                     if (s.Contains("init"))
                     {
@@ -30,12 +30,10 @@ namespace VideoCaptureCmd
                     {
                         vc.StopRecord();
                     }
-
                     if (s.Contains("pause"))
                     {
                         vc.PauseRecord();
                     }
-
                     if (s.Contains("continue"))
                     {
                         vc.ContinueRecord();
@@ -100,10 +98,10 @@ namespace VideoCaptureCmd
                         Console.WriteLine(vc.BitRate);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
         }
     }

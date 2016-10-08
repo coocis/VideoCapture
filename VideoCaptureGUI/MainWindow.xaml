@@ -5,10 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VideoCaptureGUI"
         mc:Ignorable="d"
-        Title="Video Capture" Height="350" Width="525">
-    <Grid>
-        <Button x:Name="startRecordButton" Content="开始录制" HorizontalAlignment="Left" Margin="66,53,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button x:Name="stopRecordButton" Content="停止录制" HorizontalAlignment="Left" Margin="66,86,0,0" VerticalAlignment="Top" Width="75"/>
+        Title="Video Capture" Height="193.026" Width="220.064" ResizeMode="CanMinimize">
+    <Grid Background="#FF2B2B2B">
+        <Button x:Name="startRecordButton" Content="开始录制(F8)" HorizontalAlignment="Left" Margin="69,37,0,0" VerticalAlignment="Top" Width="75" Click="startRecordButton_Click"/>
+        <Button x:Name="stopRecordButton" Content="停止录制(F9)" HorizontalAlignment="Left" Margin="69,86,0,0" VerticalAlignment="Top" Width="75" Click="stopRecordButton_Click"/>
+        <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="10,127,0,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="#FFF70000" Width="192" HorizontalContentAlignment="Center"/>
 
     </Grid>
 </Window>

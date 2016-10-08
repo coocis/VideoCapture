@@ -8,6 +8,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using AForge.Video;
 using AForge.Video.FFMPEG;
+using MediaToolkit;
+using MediaToolkit.Model;
+using MediaToolkit.Options;
 
 namespace VideoCapture
 {
@@ -136,7 +139,8 @@ namespace VideoCapture
         private ScreenCaptureStream _stream;
         private VideoFileWriter writer;
         private Rectangle screenArea = Rectangle.Empty;
-        private bool _isStart = false;
+        private bool _isPause = false;
+        private bool _isRecording = false;
         #endregion //private
         /// <summary>
         /// 初始化
@@ -175,17 +179,20 @@ namespace VideoCapture
         /// 暂停后再继续用ContinueRecord方法
         /// </summary>
         public void StartRecord()
-
-        {// get entire desktop area size
+        {
+            if (_isRecording)
+            {
+                return;
+            }
+            _isRecording = true;
             foreach (Screen screen in
                       Screen.AllScreens)
             {
                 screenArea = Rectangle.Union(screenArea, screen.Bounds);
             }
-            string file = _videoDirectory + Path.DirectorySeparatorChar + _videoName + _videoFormatString;
+            string file = _videoDirectory + Path.DirectorySeparatorChar + _videoName + "tmp" + _videoFormatString;
             writer = new VideoFileWriter();
             writer.Open(file, _resolutionWidth, _resolutionHeight, _frameRate, VideoCodec.MPEG4, _bitRate);
-
             // create screen capture video source
             _stream = new ScreenCaptureStream(screenArea);
             _stream.FrameInterval = (1000 / _frameRate);
@@ -194,7 +201,6 @@ namespace VideoCapture
 
             // start the video source
             _stream.Start();
-            _isStart = true;
 
         }
         /// <summary>
@@ -202,23 +208,39 @@ namespace VideoCapture
         /// </summary>
         public void PauseRecord()
         {
-            _isStart = false;
+            _isPause = true;
         }
         /// <summary>
         /// 继续录制
         /// </summary>
         public void ContinueRecord()
         {
-            _isStart = true;
+            _isPause = false;
         }
         /// <summary>
         /// 结束录制，并且保存视频
         /// </summary>
         public void StopRecord()
         {
-            _isStart = false;
+            if (!_isRecording)
+            {
+                return;
+            }
+            _isRecording = false;
+            _isPause = false;
             writer.Close();
             _stream.SignalToStop();
+            //转成H.264（AVC/MPEG P10)格式
+            var inputFile = new MediaFile { Filename = _videoDirectory + Path.DirectorySeparatorChar + _videoName + "tmp" + _videoFormatString };
+            var outputFile = new MediaFile { Filename = _videoDirectory + Path.DirectorySeparatorChar + _videoName + _videoFormatString };
+            using (var engine = new Engine())
+            {
+                ConversionOptions opt = new ConversionOptions()
+                {
+                };
+                engine.Convert(inputFile, outputFile);
+            }
+            File.Delete(_videoDirectory + Path.DirectorySeparatorChar + _videoName + "tmp" + _videoFormatString);
         }
 
         private void video_NewFrame(object sender, NewFrameEventArgs eventArgs)
@@ -231,7 +253,7 @@ namespace VideoCapture
                 Cursors.Default.Draw(g, cursor);
             }
             resize = new Bitmap(origin, new Size(_resolutionWidth, _resolutionHeight));
-            if (writer.IsOpen && _isStart)
+            if (writer.IsOpen && !_isPause)
             {
                 try
                 {
